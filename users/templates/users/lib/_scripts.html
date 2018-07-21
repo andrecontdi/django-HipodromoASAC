@@ -1,0 +1,15 @@
+{% load static %}
+
+{% block scripts %}
+<script src="{% static "vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "vendor/bootstrap/dist/js/bootstrap.min.js" %} "></script>
+<script src="{% static "vendor/videobackground/videobackground.js" %} "></script>
+<script src="{% static "vendor/icheck/icheck.min.js" %} "></script>
+<script>
+  console.log(window.location.origin);
+  var _ROOT = window.location.origin + '/static/';
+  var _DIST_ROOT = _ROOT + 'dist/';
+  var inputs;
+</script>
+<script src="{% static "dist/js/authentication.js" %}"></script>
+{% endblock %}

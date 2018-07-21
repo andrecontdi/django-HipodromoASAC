@@ -1,0 +1,182 @@
+@font-face {
+    font-family: lovelo;
+    src: url(../fonts/lovelo/lovelo_black.eot);
+    src: url(../fonts/lovelo/lovelo_black.eot?#iefix) format('embedded-opentype'), url(../fonts/lovelo/lovelo_black.woff) format('woff'), url(../fonts/lovelo/lovelo_black.ttf) format('truetype'), url(../fonts/lovelo/lovelo_black.svg#loveloblack) format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    @font-face {
+      font-family: lovelo;
+      src: url(../fonts/lovelo/lovelo_black.svg) format('svg');
+    }
+}
+
+@font-face {
+	font-family: "Flaticon";
+	src: url("../fonts/flaticon/flaticon.eot");
+	src: url("../fonts/flaticon/flaticon.eot#iefix") format("embedded-opentype"),
+	url("../fonts/flaticon/flaticon.woff") format("woff"),
+	url("../fonts/flaticon/flaticon.ttf") format("truetype"),
+	url("../fonts/flaticon/flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+	font-family: Flaticon;
+  font-style: normal;
+}.flaticon-business:before {
+	content: "\e000";
+}
+.flaticon-horse:before {
+	content: "\e001";
+}
+
+html, body {
+  height: 100%;
+}
+
+.jumbotron {
+  background-color: transparent;
+}
+
+.jumbotron.vertical-center {
+  margin-bottom: 0;
+}
+
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-box-align : center;
+  -webkit-align-items : center;
+  -moz-box-align : center;
+  -ms-flex-align : center;
+  align-items : center;
+
+  width: 100%;
+  -webkit-box-pack : center;
+  -moz-box-pack : center;
+  -ms-flex-pack : center;
+  -webkit-justify-content : center;
+  justify-content : center;
+}
+
+.container h1 {
+  font-family: 'lovelo','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+  color: #fff;
+  display: inline-block;
+  position: relative;
+}
+
+.container i.flaticon-horse:before {
+  color: #fff;
+  font-size: 60px;
+  display: inline-block;
+  position: relative;
+}
+
+.container i.flaticon-horse:before {
+  margin: 0em .4em 0em .4em;
+}
+
+i.flaticon-horse.flip:before {
+  -webkit-transform: scale(-1, 1);
+  -moz-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+button {
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.center-button {
+  margin: 10px auto;
+}
+
+.center-button-s {
+  margin: 7px auto;
+}
+
+.register-box {
+  margin: 0% auto;
+}
+
+#box-registrar {
+  display: none;
+  position: relative;
+}
+
+#box-iniciarsesion {
+  display: none;
+  position: relative;
+}
+
+/*.register-box-body,
+.login-box-body {
+  overflow-y: scroll;
+}*/
+
+#box-registrar select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+div.icheckbox_square-blue {
+  margin-right: .25em;
+}
+
+.register-box .overlay > .fa,
+.login-box .overlay > .fa {
+  position: absolute;
+  left: 50.2%;
+  margin-left: -15px;
+  margin-top: -15px;
+  font-size: 25px;
+}
+
+.register-box .overlay > .fa {
+  top: 75.5%;
+}
+
+.login-box .overlay > .fa {
+  top: 58.2%;
+}
+
+.register-box .overlay > .fa::before,
+.login-box .overlay > .fa::before {
+  background: transparent;
+  color: #000;
+  background: -webkit-linear-gradient(left, #1e5799 0%,#7db9e8 100%);
+  background: -moz-linear-gradient(left, #1e5799 0%, #7db9e8 100%);
+  background: linear-gradient(to right, #1e5799 0%,#7db9e8 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=1 );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.register-box .overlay > .fa,
+.login-box .overlay > .fa {
+  display: none;
+}
+
+.login-box input[type='file'],
+.register-box input[type='file'] {
+  visibility: hidden;
+  position: absolute;
+}
+
+.has-error {
+  font-size: 12px;
+}
