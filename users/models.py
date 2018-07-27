@@ -7,12 +7,14 @@ from decimal import Decimal
 
 # Create your models here.
 class Persona(AbstractUser):
-    cedula = models.PositiveIntegerField(unique=True)
-    primer_nombre = models.CharField(max_length=25)
-    segundo_nombre = models.CharField(max_length=25)
-    primer_apellido = models.CharField(max_length=25)
-    segundo_apellido = models.CharField(max_length=25)
-    fecha_nacimiento = models.DateField()
+    email = models.EmailField(unique=True)
+    cedula = models.PositiveIntegerField(unique=True, null=True, default=None)
+    primer_nombre = models.CharField(max_length=25, blank=True, default='')
+    segundo_nombre = models.CharField(max_length=25, blank=True, default='')
+    primer_apellido = models.CharField(max_length=25, blank=True, default='')
+    segundo_apellido = models.CharField(max_length=25, blank=True, default='')
+    fecha_nacimiento = models.DateField(null=True, default=None)
+    avatar = models.ImageField(upload_to='avatars', blank=True, default='')
 
 
 class Caballerizo(Persona):

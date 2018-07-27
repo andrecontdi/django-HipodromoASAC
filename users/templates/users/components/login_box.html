@@ -1,0 +1,19 @@
+<div id="box-iniciarsesion" class="container vertical-center">
+  <div class="login-box">
+    <div class="login-box-body">
+      <p class="login-box-msg">Iniciar sesión con tu usuario o correo</p>
+      <form method="post">
+        {% include 'users/components/login_form.html' %}
+      </form>
+
+      <div class="social-auth-links text-center">
+        <div class="overlay">
+          <i class="fa fa-circle-o-notch fa-spin"></i>
+        </div>
+        <button id="btn-is-registrar" class="btn bg-green btn-block btn-flat">Registrar</button>
+        <button id="btn-is-regresar" class="btn bg-green btn-block btn-flat">Regresar</button>
+      </div><!-- /.social-auth-links -->
+
+    </div><!-- /.login-box-body -->
+  </div><!-- /.login-box -->
+</div>

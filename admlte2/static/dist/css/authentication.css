@@ -111,6 +111,10 @@ button {
   margin: 0% auto;
 }
 
+.register-box, .login-box {
+  position: relative;
+}
+
 #box-registrar {
   display: none;
   position: relative;
@@ -120,11 +124,6 @@ button {
   display: none;
   position: relative;
 }
-
-/*.register-box-body,
-.login-box-body {
-  overflow-y: scroll;
-}*/
 
 #box-registrar select {
   -webkit-appearance: none;
@@ -139,18 +138,9 @@ div.icheckbox_square-blue {
 .register-box .overlay > .fa,
 .login-box .overlay > .fa {
   position: absolute;
-  left: 50.2%;
   margin-left: -15px;
-  margin-top: -15px;
   font-size: 25px;
-}
-
-.register-box .overlay > .fa {
-  top: 75.5%;
-}
-
-.login-box .overlay > .fa {
-  top: 58.2%;
+  bottom: 22%;
 }
 
 .register-box .overlay > .fa::before,
@@ -166,8 +156,8 @@ div.icheckbox_square-blue {
   -webkit-text-fill-color: transparent;
 }
 
-.register-box .overlay > .fa,
-.login-box .overlay > .fa {
+.register-box .overlay,
+.login-box .overlay {
   display: none;
 }
 
@@ -179,4 +169,10 @@ div.icheckbox_square-blue {
 
 .has-error {
   font-size: 12px;
+}
+
+.alert {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: left;
 }

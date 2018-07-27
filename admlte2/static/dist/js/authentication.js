@@ -13,27 +13,8 @@ function checkIcheckExists() {
 }
 
 /* FUNCIONES DE LAS <FORM> DE LA PÁGINA INDEX */
-function validateUsername(username) {
-  var check = /^[a-zA-Z0-9]{3,12}$/;
-  return check.test(username);
-}
-
-function validateEmail(email) {
-  var check = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  return check.test(email);
-}
-
-function checkInputs(input, errorMessage, isLogin) {
-  if (input.value == '' || input.value.trim() == '') {
-    input.setCustomValidity('Por favor completa este campo.');
-  } else if (isLogin && !validateUsername(input.value.trim()) && !validateEmail(input.value.trim())) {
-    input.setCustomValidity(errorMessage);
-  } else if (input.validity.patternMismatch && !isLogin) {
-    input.setCustomValidity(errorMessage);
-  }
-  else {
-    input.setCustomValidity('');
-  }
+function csrfSafeMethod(method) {
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
 function trimInputs(search) {
@@ -42,6 +23,22 @@ function trimInputs(search) {
   });
 }
 
+function showGenericErrors(errorMessages, id) {
+  len = errorMessages.length
+  if (len > 0) {
+    errorDiv = `
+    <div class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>`;
+    for (var i = 0; i < len; i++) {
+      errorDiv += errorMessages[i];
+      errorDiv += (i === len-1) ? '' : '<br>';
+    }
+    errorDiv += '</div>';
+    $(errorDiv).insertAfter($(id).find('.overlay')).show();
+  }
+}
 
 /* REGISTRO DE USUARIO */
 function handleImageFromInput(input) {
@@ -66,91 +63,139 @@ function handleImageFromInput(input) {
 
 function executeRegisterFormRequest(id) {
   function progress(e) {
-    if(e.lengthComputable){
-        var max = e.total;
-        var current = e.loaded;
-        var Percentage = (current * 100)/max;
-        console.log(Percentage);
-        if(Percentage >= 100) {
-           // process completed
-           console.log('Complete YEAAAH!!');
-        }
+    if(e.lengthComputable) {
+      var max = e.total;
+      var current = e.loaded;
+      var Percentage = (current * 100)/max;
+      console.log(Percentage);
+      if(Percentage >= 100) {
+        // process completed
+        console.log('Complete YEAAAH!!');
+      }
     }
   }
-  $(id).find('form').submit(function(event) {
-    event.preventDefault();
-    $(id).find('.overlay > .fa').show();
-    var formData = new FormData(this);
-    var usu_nombre = $(inputs)[0];
-    var usu_correo = $(inputs)[1];
-    var usu_clave = $(inputs)[2];
-    var usu_clavev = $(inputs)[3];
-    var error_label = $(id).find('.social-auth-links label');
-    $(error_label).addClass('invisible');
-
-    $.ajax({
-        url: 'user-connection.inc.php',
+  form = $(id).find('form');
+  var $validator = $(form).validate({
+    rules: {
+      username: {
+        minlength: 3,
+        maxlength: 12,
+        pattern: /^[a-zA-Z0-9]{3,12}$/
+      },
+      email: {
+        email: true
+      },
+      password: {
+        minlength: 6,
+        maxlength: 13,
+        pattern: /^[a-zA-Z0-9]{6,13}$/
+      },
+      password_confirm: {
+        minlength: 6,
+        maxlength: 13,
+        pattern: /^[a-zA-Z0-9]{6,13}$/,
+        equalTo: '#id_password'
+      }
+    },
+    messages: {
+      username: {
+        required: 'Nombre de usuario requerido',
+        minlength: 'El nombre de usuario debe tener al menos {0} caracteres',
+        maxlength: 'El nombre de usuario permite tener máximo {0} caracteres',
+        pattern: 'Introduce un nombre de usuario válido. e.g example123'
+      },
+      email: {
+        required: 'Correo electrónico requerido',
+        email: 'Introduce un correo válido. e.g example@hostexample.com'
+      },
+      password: {
+        required: 'Contraseña requerida',
+        minlength: 'La contraseña debe tener al menos {0} caracteres',
+        maxlength: 'La contraseña permite tener máximo {0} caracteres',
+        pattern: 'Introduce una contraseña alfanumérica válida'
+      },
+      password_confirm: {
+        required: 'Verificación de contraseña requerida',
+        minlength: 'La contraseña de verificación debe tener al menos {0} caracteres',
+        maxlength: 'La contraseña de verificación permite tener máximo {0} caracteres',
+        pattern: 'Introduce una contraseña alfanumérica válida',
+        equalTo: 'Las contraseñas no coinciden, por favor verifique'
+      }
+    },
+    submitHandler: function(form) {
+      $('.alert').remove();
+      $(id).find('.overlay').show();
+      var formData = new FormData(form);
+      var error_label = $(id).find('.social-auth-links label');
+      $(error_label).addClass('invisible');
+      $.ajax({
+        url: 'users/register',
         type: 'POST',
         data: formData,
         xhr: function() {
-                var myXhr = $.ajaxSettings.xhr();
-                if(myXhr.upload){
-                    myXhr.upload.addEventListener('progress',progress, false);
-                }
-                return myXhr;
+          var myXhr = $.ajaxSettings.xhr();
+          if(myXhr.upload){
+            myXhr.upload.addEventListener('progress',progress, false);
+          }
+          return myXhr;
         },
-        success: function (data) {
-          $(id).find('.overlay > .fa').fadeOut(300);
-          var dataResponse = JSON.parse(data);
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader('X-CSRFToken', $('[name=csrfmiddlewaretoken]').val());
+          }
+        },
+        success: function(data) {
+          $(id).find('.overlay').fadeOut(300);
+          console.log('success');
+          console.log(data);
+          /*var dataResponse = JSON.parse(data);
           console.log(dataResponse.response.data);
           if (dataResponse.action.action === 'success') {
-            //window.location.replace(_ROOT + 'pages/');
-          }
+            window.location.replace(_ROOT + 'pages/');
+          }*/
         },
-        error: function(data) {
-          $(id).find('.overlay > .fa').fadeOut(300);
-          console.log(data);
-          var dataResponse = JSON.parse(data.responseText);
-          if (data.status === 409) {
-            if (dataResponse.action.type === 'usu_nombre') {
-              $(usu_nombre).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_correo).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clavev).parent().removeClass('has-error').addClass('has-feedback');
-            } else if (dataResponse.action.type === 'usu_correo') {
-              $(usu_nombre).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_correo).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clave).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clavev).parent().removeClass('has-error').addClass('has-feedback');
-            } else if (dataResponse.action.type === 'usu_clave') {
-              $(usu_nombre).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_correo).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clavev).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).val('');
-              $(usu_clavev).val('');
-            } else if (dataResponse.action.type === 'usu_clavev') {
-              $(usu_nombre).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_correo).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clavev).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clave).val('');
-              $(usu_clavev).val('');
-            } else if (dataResponse.action.type === 'both_password') {
-              $(usu_nombre).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_correo).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clavev).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clave).val('');
-              $(usu_clavev).val('');
+        error: function(xhr) {
+          $(id).find('.overlay').fadeOut(300);
+          console.log('error');
+          console.log(xhr.responseJSON);
+          data = xhr.responseJSON;
+          if (data.status === 'error') {
+            if (data.messages) {
+              genericErrors = [];
+              fieldErrors = {};
+              for (var i in data.messages) {
+                if (i === '__all__') {
+                  genericErrors = data.messages[i];
+                } else {
+                  fieldErrors[i] = data.messages[i][0];
+                }
+              }
+              $validator.showErrors(fieldErrors);
+              showGenericErrors(genericErrors, id);
             }
           }
-          $(error_label).text(dataResponse.response.data).removeClass('invisible');
         },
         cache: false,
         contentType: false,
         processData: false
-    });
+      });
+    },
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      error.addClass("help-block");
+      
+      if (element.prop("type") === "checkbox") {
+        error.insertAfter(element.parent("label"));
+      } else {
+        error.insertAfter(element);
+      }
+    },
+    highlight: function(element, errorClass, validClass) {
+      $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
+    },
+    unhighlight: function(element, errorClass, validClass) {
+      $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
+    }
   });
 }
 

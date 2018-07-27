@@ -1,0 +1,18 @@
+<div id="box-registrar" class="container vertical-center">
+  <div class="register-box">
+    <div class="register-box-body">
+      <p class="login-box-msg">Registrar un nuevo miembro</p>
+      <form method="post">
+        {% include 'users/components/register_form.html' %}
+      </form>
+
+      <div class="social-auth-links text-center">
+        <div class="overlay">
+          <i class="fa fa-circle-o-notch fa-spin"></i>
+        </div>
+        <button id="btn-rg-iniciarsesion" class="btn bg-green btn-block btn-flat">Iniciar sesión</button>
+        <button id="btn-rg-regresar" class="btn bg-green btn-block btn-flat">Regresar</button>
+      </div>
+    </div><!-- /.form-box -->
+  </div><!-- /.register-box -->
+</div>
