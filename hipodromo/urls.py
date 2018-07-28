@@ -21,7 +21,8 @@ from users import views as user_views
 urlpatterns = [
     path('users/', include('users.urls')),
     path('admin/', admin.site.urls),
-    path('', user_views.authenticate),
+    path('', user_views.authentication),
+    path('home', user_views.home, name='home'),
     path('auth', TemplateView.as_view(template_name='users/authentication2.html')),
     path('prueba', TemplateView.as_view(template_name='admlte2/index.html')),
 ]

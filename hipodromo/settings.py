@@ -129,3 +129,5 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'users.Persona'
+
+LOGIN_URL = '/'

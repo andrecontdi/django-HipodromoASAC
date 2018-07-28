@@ -126,10 +126,8 @@ function executeRegisterFormRequest(id) {
       $('.alert').remove();
       $(id).find('.overlay').show();
       var formData = new FormData(form);
-      var error_label = $(id).find('.social-auth-links label');
-      $(error_label).addClass('invisible');
       $.ajax({
-        url: 'users/register',
+        url: $(form).attr('action'),
         type: 'POST',
         data: formData,
         xhr: function() {
@@ -144,35 +142,37 @@ function executeRegisterFormRequest(id) {
             xhr.setRequestHeader('X-CSRFToken', $('[name=csrfmiddlewaretoken]').val());
           }
         },
-        success: function(data) {
+        success: function(response) {
           $(id).find('.overlay').fadeOut(300);
           console.log('success');
-          console.log(data);
-          /*var dataResponse = JSON.parse(data);
-          console.log(dataResponse.response.data);
-          if (dataResponse.action.action === 'success') {
-            window.location.replace(_ROOT + 'pages/');
-          }*/
+          console.log(response);
+          if (response.status === 'success') {
+            window.location.replace(response.data.url);
+          }
         },
         error: function(xhr) {
           $(id).find('.overlay').fadeOut(300);
           console.log('error');
           console.log(xhr.responseJSON);
-          data = xhr.responseJSON;
-          if (data.status === 'error') {
-            if (data.messages) {
-              genericErrors = [];
-              fieldErrors = {};
-              for (var i in data.messages) {
-                if (i === '__all__') {
-                  genericErrors = data.messages[i];
-                } else {
-                  fieldErrors[i] = data.messages[i][0];
+          if (xhr.responseJSON != null) {
+            data = xhr.responseJSON;
+            if (data.status === 'error') {
+              if (data.messages) {
+                genericErrors = [];
+                fieldErrors = {};
+                for (var i in data.messages) {
+                  if (i === '__all__') {
+                    genericErrors = data.messages[i];
+                  } else {
+                    fieldErrors[i] = data.messages[i][0];
+                  }
                 }
+                $validator.showErrors(fieldErrors);
+                showGenericErrors(genericErrors, id);
               }
-              $validator.showErrors(fieldErrors);
-              showGenericErrors(genericErrors, id);
             }
+          } else {
+            showGenericErrors(['Falla en la conexión'],id);
           }
         },
         cache: false,

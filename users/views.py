@@ -1,33 +1,62 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.urls import resolve, Resolver404
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from .forms import RegisterForm
 from .models import Persona
 from hipodromo.utils import result_construct
 
 
 # Create your views here.
-def authenticate(request):
+def authentication(request):
     if request.method == 'GET':
         form = RegisterForm()
+        next = request.GET['next']
     return render(
         request,
         'users/authentication.html',
-        {'form': form}
+        {'form': form, 'next': next}
     )
 
 
 def register(request):
-    response = result_construct()
-    if request.method == 'POST':
-        print(request.POST)
-        form = RegisterForm(request.POST)
+    if request.method != 'POST':
+        message = {'__all__': ['Método no autorizado, por favor verifique']}
+        return result_construct(messages=message, httpCode=404)
 
-        print(form)
+    print(request.POST)
+    print(request.GET)
+    form = RegisterForm(request.POST)
+    username = request.POST['username']
+    password = request.POST['password']
 
-        if form.is_valid():
-            form.save()
-            response = result_construct(status='success', httpCode=200)
-        else:
-            response = result_construct(messages=form.errors, httpCode=500)
+    if not form.is_valid():
+        return result_construct(messages=form.errors)
 
-    return response
+    persona = form.save(commit=False)
+    persona.set_password(password)
+    persona.save()
+    if persona is None:
+        message = {'__all__': ['Usuario o clave inválida, por favor verifique']}
+        return result_construct(messages=message)
+
+    login(request, persona)
+    if not request.user.is_authenticated:
+        message = {'__all__': ['Usuario no autenticado, por favor inicie sesión']}
+        return result_construct(messages=message)
+
+    next = request.GET['next']
+    try:
+        resolve(next)
+    except Resolver404:
+        next = None
+    url = reverse('home') if next is None else next
+    data = {'url': url}
+    return result_construct(status='success', data=data, httpCode=200)
+
+
+@login_required()
+def home(request):
+    return result_construct(status='success', httpCode=200)
