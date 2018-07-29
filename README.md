@@ -14,7 +14,8 @@ La gestión está comtemplada con el uso de usuarios, roles y permisos. Los afic
 
 - Implementar inicio de sesión.
 - Página de home.
-- Validando sesión al entrar en la página de inicio (redirigir al usuario si está autenticado)
+- Agregar página 404.
+- ~~Validando sesión al entrar en la página de inicio (redirigir al usuario si está autenticado).~~
 - ~~Avatar al registrarse.~~
 - ~~Post-registro (mostrar mensaje o ir a alguna página).~~ :small_red_triangle_down:
 
