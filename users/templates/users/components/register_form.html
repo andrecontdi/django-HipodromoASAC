@@ -22,16 +22,14 @@
   {% render_field form.password_confirm class="form-control" placeholder=form.password_confirm.label %}
   <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 </div>
-<div class="row">
-  <div class="col-xs-7">
-    <div class="image">
+<div class="form-group has-feedback">
+    <div class="image inline-block">
       <img src="{% static "dist/img/avatar4.png" %}" width="60px" height="60px" class="img-circle" alt="User Image">
     </div>
-  </div>
-  <div class="col-xs-5">
-    <button for="files" type="button" class="btn btn-twitter btn-block btn-flat center-button">ELEGIR FOTO</button>
-    {% render_field form.avatar class="form-control" accept="image/*" %}
-  </div>
+    <div class="avatar inline-block">
+      <button for="files" type="button" class="btn btn-twitter btn-block btn-flat center-button">ELEGIR FOTO</button>
+      {% render_field form.avatar class="form-control" accept="image/*" %}
+    </div>
 </div>
 <div class="row">
   <div class="col-xs-7 center-button-s">

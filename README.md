@@ -13,11 +13,10 @@ La gestión está comtemplada con el uso de usuarios, roles y permisos. Los afic
 ## Por hacer
 
 - Implementar inicio de sesión.
-- Página de inicio.
-- ~~Post-registro (mostrar mensaje o ir a alguna página).~~
-- ~~Validaciones en el registro de usuario.~~  :small_red_triangle_down:
-- ~~Personalizar el modelo de usuario de Django.~~  :small_red_triangle_down:
-- ~~Agregar template AdminLTE V.2.4.*.~~ :small_red_triangle_down:
+- Página de home.
+- Validando sesión al entrar en la página de inicio (redirigir al usuario si está autenticado)
+- ~~Avatar al registrarse.~~
+- ~~Post-registro (mostrar mensaje o ir a alguna página).~~ :small_red_triangle_down:
 
 ## Contribución
 Las constribuciones siempre son **bienvenidas**! Aquí está como hacerlo:

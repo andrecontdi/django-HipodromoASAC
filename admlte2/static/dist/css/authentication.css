@@ -33,6 +33,10 @@
 	content: "\e001";
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 html, body {
   height: 100%;
 }
@@ -165,6 +169,11 @@ div.icheckbox_square-blue {
 .register-box input[type='file'] {
   visibility: hidden;
   position: absolute;
+}
+
+.avatar {
+  position: absolute;
+  right: 0px;
 }
 
 .has-error {

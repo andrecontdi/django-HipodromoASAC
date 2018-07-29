@@ -43,6 +43,7 @@ function showGenericErrors(errorMessages, id) {
 /* REGISTRO DE USUARIO */
 function handleImageFromInput(input) {
   var mimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpeg', 'image/jpg'];
+  console.log(input.val());
   $(input).change(function(event) {
     event.preventDefault();
     if ($.inArray($(input)[0].files[0].type, mimeTypes) != -1) {
@@ -187,7 +188,7 @@ function executeRegisterFormRequest(id) {
       if (element.prop("type") === "checkbox") {
         error.insertAfter(element.parent("label"));
       } else {
-        error.insertAfter(element);
+        error.insertAfter((element.attr('name') == 'avatar') ? $(element).parent('.avatar') : element);
       }
     },
     highlight: function(element, errorClass, validClass) {

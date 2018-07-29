@@ -13,7 +13,7 @@ from hipodromo.utils import result_construct
 def authentication(request):
     if request.method == 'GET':
         form = RegisterForm()
-        next = request.GET['next']
+        next = request.GET.get('next')
     return render(
         request,
         'users/authentication.html',
@@ -26,15 +26,12 @@ def register(request):
         message = {'__all__': ['Método no autorizado, por favor verifique']}
         return result_construct(messages=message, httpCode=404)
 
-    print(request.POST)
-    print(request.GET)
-    form = RegisterForm(request.POST)
-    username = request.POST['username']
-    password = request.POST['password']
-
+    form = RegisterForm(request.POST, request.FILES)
     if not form.is_valid():
         return result_construct(messages=form.errors)
 
+    username = request.POST.get('username')
+    password = request.POST.get('password')
     persona = form.save(commit=False)
     persona.set_password(password)
     persona.save()
@@ -47,7 +44,7 @@ def register(request):
         message = {'__all__': ['Usuario no autenticado, por favor inicie sesión']}
         return result_construct(messages=message)
 
-    next = request.GET['next']
+    next = request.GET.get('next')
     try:
         resolve(next)
     except Resolver404:
