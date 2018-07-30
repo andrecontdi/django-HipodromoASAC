@@ -1,10 +1,13 @@
-from django.contrib.auth.models import AbstractUser
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
+# standard library
 from decimal import Decimal
 from io import BytesIO
 from mimetypes import guess_type
+
+# Django
+from django.contrib.auth.models import AbstractUser
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from PIL import Image
 
 

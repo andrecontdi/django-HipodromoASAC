@@ -1,8 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.forms import (
-    BooleanField, CharField, CheckboxInput, ModelForm,
-    PasswordInput, ValidationError
-)
+from django.forms import (BooleanField, CharField, CheckboxInput, ModelForm,
+                          PasswordInput, ValidationError)
+
 from .models import Persona
 
 

@@ -1,11 +1,14 @@
+# Django
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from .forms import RegisterForm, LoginForm
+
+# local Django
+from .forms import LoginForm, RegisterForm
 from .models import Persona
-from .utils import result_construct, validateEmail, login
+from .utils import login, result_construct, validateEmail
 
 
 # Create your views here.
