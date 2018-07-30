@@ -2,24 +2,24 @@
 
 {% csrf_token %}
 
-{% for hidden_field in form.hidden_fields %}
+{% for hidden_field in register_form.hidden_fields %}
   {{ hidden_field }}
 {% endfor %}
 
 <div class="form-group has-feedback">
-  {% render_field form.username class="form-control" placeholder=form.username.label %}
+  {% render_field register_form.username class="form-control" placeholder=register_form.username.label %}
   <span class="glyphicon glyphicon-user form-control-feedback"></span>
 </div>
 <div class="form-group has-feedback">
-  {% render_field form.email class="form-control" placeholder=form.email.label %}
+  {% render_field register_form.email class="form-control" placeholder=register_form.email.label %}
   <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 </div>
 <div class="form-group has-feedback">
-  {% render_field form.password class="form-control" placeholder=form.password.label %}
+  {% render_field register_form.password class="form-control" placeholder=register_form.password.label %}
   <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 </div>
 <div class="form-group has-feedback">
-  {% render_field form.password_confirm class="form-control" placeholder=form.password_confirm.label %}
+  {% render_field register_form.password_confirm class="form-control" placeholder=register_form.password_confirm.label %}
   <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 </div>
 <div class="form-group has-feedback">
@@ -28,14 +28,14 @@
     </div>
     <div class="avatar inline-block">
       <button for="files" type="button" class="btn btn-twitter btn-block btn-flat center-button">ELEGIR FOTO</button>
-      {% render_field form.avatar class="form-control" accept="image/*" %}
+      {% render_field register_form.avatar class="form-control" accept="image/*" %}
     </div>
 </div>
 <div class="row">
   <div class="col-xs-7 center-button-s">
     <div class="checkbox icheck">
       <label>
-        {% render_field form.confirm_terms %} Acepto los términos.
+        {% render_field register_form.confirm_terms %} Acepto los términos.
       </label>
     </div>
   </div>

@@ -2,7 +2,7 @@
   <div class="register-box">
     <div class="register-box-body">
       <p class="login-box-msg">Registrar un nuevo miembro</p>
-      <form method="post" action="{% url 'register' %}{% if next %}?next={{next}}{% endif %}">
+      <form method="post" action="{% url 'persona_register' %}{% if next %}?next={{next}}{% endif %}">
         {% include 'users/components/register_form.html' %}
       </form>
 

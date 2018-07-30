@@ -2,7 +2,7 @@
   <div class="login-box">
     <div class="login-box-body">
       <p class="login-box-msg">Iniciar sesión con tu usuario o correo</p>
-      <form method="post">
+      <form method="post" action="{% url 'persona_login' %}{% if next %}?next={{next}}{% endif %}">
         {% include 'users/components/login_form.html' %}
       </form>
 

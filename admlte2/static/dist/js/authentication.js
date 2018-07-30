@@ -42,7 +42,7 @@ function showGenericErrors(errorMessages, id) {
 
 /* REGISTRO DE USUARIO */
 function handleImageFromInput(input) {
-  var mimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpeg', 'image/jpg'];
+  var mimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
   console.log(input.val());
   $(input).change(function(event) {
     event.preventDefault();
@@ -63,18 +63,6 @@ function handleImageFromInput(input) {
 }
 
 function executeRegisterFormRequest(id) {
-  function progress(e) {
-    if(e.lengthComputable) {
-      var max = e.total;
-      var current = e.loaded;
-      var Percentage = (current * 100)/max;
-      console.log(Percentage);
-      if(Percentage >= 100) {
-        // process completed
-        console.log('Complete YEAAAH!!');
-      }
-    }
-  }
   form = $(id).find('form');
   var $validator = $(form).validate({
     rules: {
@@ -131,13 +119,6 @@ function executeRegisterFormRequest(id) {
         url: $(form).attr('action'),
         type: 'POST',
         data: formData,
-        xhr: function() {
-          var myXhr = $.ajaxSettings.xhr();
-          if(myXhr.upload){
-            myXhr.upload.addEventListener('progress',progress, false);
-          }
-          return myXhr;
-        },
         beforeSend: function(xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader('X-CSRFToken', $('[name=csrfmiddlewaretoken]').val());
@@ -202,49 +183,100 @@ function executeRegisterFormRequest(id) {
 
 /* INICIAR SESIÓN DE USUARIO */
 function executeLoginFormRequest(id) {
-  $(id).find('form').submit(function(event) {
-    event.preventDefault();
-    $(id).find('.overlay > .fa').show();
-    var formData = new FormData(this);
-    var usu_nombre = $(inputs)[0];
-    var usu_clave = $(inputs)[1];
-    var error_label = $(id).find('.social-auth-links label');
-    $(error_label).addClass('invisible');
-    
-    $.ajax({
-        url: 'user-connection.inc.php',
+  form = $(id).find('form');
+  var $validator = $(form).validate({
+    rules: {
+      username: {
+        minlength: 3,
+        maxlength: 12
+      },
+      password: {
+        minlength: 6,
+        maxlength: 13,
+        pattern: /^[a-zA-Z0-9]{6,13}$/
+      }
+    },
+    messages: {
+      username: {
+        required: 'Nombre de usuario requerido',
+        minlength: 'El nombre de usuario debe tener al menos {0} caracteres',
+        maxlength: 'El nombre de usuario permite tener máximo {0} caracteres',
+        pattern: 'Introduce un nombre de usuario válido. e.g example123'
+      },
+      password: {
+        required: 'Contraseña requerida',
+        minlength: 'La contraseña debe tener al menos {0} caracteres',
+        maxlength: 'La contraseña permite tener máximo {0} caracteres',
+        pattern: 'Introduce una contraseña alfanumérica válida'
+      }
+    },
+    submitHandler: function(form) {
+      $('.alert').remove();
+      $(id).find('.overlay').show();
+      var formData = new FormData(form);
+      $.ajax({
+        url: $(form).attr('action'),
         type: 'POST',
         data: formData,
-        success: function (data) {
-          $(id).find('.overlay > .fa').fadeOut(300);
-          var dataResponse = JSON.parse(data);
-          console.log(data);
-          console.log(dataResponse.response.data);
-          if (dataResponse.action.action === 'success') {
-            //window.location.replace(_ROOT + 'pages/');
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader('X-CSRFToken', $('[name=csrfmiddlewaretoken]').val());
           }
         },
-        error: function(data) {
-          $(id).find('.overlay > .fa').fadeOut(300);
-          console.log(data);
-          var dataResponse = JSON.parse(data.responseText);
-          if (data.status === 409) {
-            if (dataResponse.action.type === 'usu_nombre' || dataResponse.action.type === 'empty') {
-              $(usu_nombre).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clave).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).val('');
-            } else if (dataResponse.action.type === 'usu_clave') {
-              $(usu_nombre).parent().removeClass('has-error').addClass('has-feedback');
-              $(usu_clave).parent().removeClass('has-feedback').addClass('has-error');
-              $(usu_clave).val('');
-            }
+        success: function(response) {
+          $(id).find('.overlay').fadeOut(300);
+          console.log('success');
+          console.log(response);
+          if (response.status === 'success') {
+            window.location.replace(response.data.url);
           }
-          $(error_label).text(dataResponse.response.data).removeClass('invisible');
+        },
+        error: function(xhr) {
+          $(id).find('.overlay').fadeOut(300);
+          console.log('error');
+          console.log(xhr.responseJSON);
+          if (xhr.responseJSON != null) {
+            data = xhr.responseJSON;
+            if (data.status === 'error') {
+              if (data.messages) {
+                genericErrors = [];
+                fieldErrors = {};
+                for (var i in data.messages) {
+                  if (i === '__all__') {
+                    genericErrors = data.messages[i];
+                  } else {
+                    fieldErrors[i] = data.messages[i][0];
+                  }
+                }
+                $validator.showErrors(fieldErrors);
+                showGenericErrors(genericErrors, id);
+              }
+            }
+          } else {
+            showGenericErrors(['Falla en la conexión'], id);
+          }
         },
         cache: false,
         contentType: false,
         processData: false
-    });
+      });
+    },
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      error.addClass("help-block");
+      
+      if (element.prop("type") === "checkbox") {
+        error.insertAfter(element.parent("label"));
+      } else {
+        error.insertAfter((element.attr('name') == 'avatar') ? $(element).parent('.avatar') : element);
+      }
+    },
+    highlight: function(element, errorClass, validClass) {
+      $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
+    },
+    unhighlight: function(element, errorClass, validClass) {
+      $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
+    }
   });
 }
 

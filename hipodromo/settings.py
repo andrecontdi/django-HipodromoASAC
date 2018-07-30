@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'admlte2.apps.Admlte2Config',
     'users.apps.UsersConfig',
-    'admlte2.apps.Admlte2Config'
 ]
 
 MIDDLEWARE = [

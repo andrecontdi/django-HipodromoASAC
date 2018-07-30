@@ -1,12 +1,11 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-from django.urls import resolve, Resolver404
-from django.http import Http404, JsonResponse, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 from .models import Persona
-from hipodromo.utils import result_construct
+from .utils import result_construct, validateEmail, login
 
 
 # Create your views here.
@@ -17,19 +16,28 @@ def authentication(request):
     if (request.user.is_authenticated):
         return HttpResponseRedirect(reverse('home'))
 
-    form = RegisterForm()
+    register_form = RegisterForm()
+    login_form = LoginForm()
     next = request.GET.get('next')
     return render(
         request,
         'users/authentication.html',
-        {'form': form, 'next': next}
+        {
+            'register_form': register_form,
+            'login_form': login_form,
+            'next': next
+        }
     )
 
 
-def register(request):
+def persona_register(request):
     if request.method != 'POST':
         message = {'__all__': ['Método no autorizado, por favor verifique']}
         return result_construct(messages=message, httpCode=404)
+
+    if (request.user.is_authenticated):
+        message = {'__all__': ['Cierre sesión para poder registrarse']}
+        return result_construct(messages=message)
 
     form = RegisterForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -44,19 +52,34 @@ def register(request):
         message = {'__all__': ['Usuario o clave inválida, por favor verifique']}
         return result_construct(messages=message)
 
-    login(request, persona)
-    if not request.user.is_authenticated:
-        message = {'__all__': ['Usuario no autenticado, por favor inicie sesión']}
+    return login(request, persona)    
+
+
+def persona_login(request):
+    if request.method != 'POST':
+        message = {'__all__': ['Método no autorizado, por favor verifique']}
+        return result_construct(messages=message, httpCode=404)
+
+    if (request.user.is_authenticated):
+        message = {'__all__': ['Cierre sesión para poder iniciar sesión']}
         return result_construct(messages=message)
 
-    next = request.GET.get('next')
-    try:
-        resolve(next)
-    except Resolver404:
-        next = None
-    url = reverse('home') if next is None else next
-    data = {'url': url}
-    return result_construct(status='success', data=data, httpCode=200)
+    username = request.POST.get('username')
+    if validateEmail(username):
+        try:
+            username = Persona.objects.get(email=username).username
+        except ObjectDoesNotExist:
+            username = None
+    request_data = request.POST.copy()
+    request_data['username'] = (
+        username if username is not None else request_data['username']
+    )
+
+    auth_form = LoginForm(data=request_data)
+    if not auth_form.is_valid():
+        return result_construct(messages=auth_form.errors)
+
+    return login(request, auth_form.get_user())
 
 
 @login_required

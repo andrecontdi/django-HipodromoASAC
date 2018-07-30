@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.forms import (
     BooleanField, CharField, CheckboxInput, ModelForm,
     PasswordInput, ValidationError
@@ -56,3 +57,10 @@ class RegisterForm(ModelForm):
                     'Avatar se murió.')
 
         return avatar
+
+
+class LoginForm(AuthenticationForm):
+    error_messages = {
+        'invalid_login': 'Nombre de usuario o contraseña incorrectos',
+        'inactive': 'Esta cuenta se encuentra inactiva',
+    }
